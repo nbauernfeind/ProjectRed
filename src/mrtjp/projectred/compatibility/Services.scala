@@ -6,7 +6,6 @@ import mrtjp.projectred.compatibility.computercraft.PluginCC_BundledCable
 import mrtjp.projectred.compatibility.cptcoloredlights.PluginColoredLights
 import mrtjp.projectred.compatibility.mfr.PluginMFRDeepStorage
 import mrtjp.projectred.compatibility.tconstruct.PluginTConstruct
-import mrtjp.projectred.compatibility.thermalexpansion.PluginThermalExpansion
 import mrtjp.projectred.compatibility.treecapitator.PluginTreecapitator
 
 object Services
@@ -15,7 +14,6 @@ object Services
     val rootPlugins = Seq[IPRPlugin](
         PluginTreecapitator,
         PluginTConstruct,
-        PluginThermalExpansion,
         PluginCC_BundledCable,
         PluginColoredLights,
         PluginMFRDeepStorage
