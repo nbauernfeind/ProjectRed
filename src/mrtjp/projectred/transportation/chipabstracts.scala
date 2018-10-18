@@ -410,9 +410,9 @@ trait TChipMatchMatrix extends RoutingChip
             matchData = tag.getIntArray("matchData")
     }
 
-    def createEqualityFor(i:Int) =
+    def createEqualityFor(i:Int): ItemEquality =
     {
-        val eq = new ItemEquality
+        val eq = new ItemOrGeneticEquality
         val (meta, nbt, ore, group) = getData(i)
         eq.setFlags(meta, nbt, ore, group)
         eq

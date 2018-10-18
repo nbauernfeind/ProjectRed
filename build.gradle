@@ -22,6 +22,8 @@ apply plugin: 'scala'
 apply plugin: 'forge'
 apply plugin: 'curseforge'
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "mrtjp"
 archivesBaseName = "ProjectRed"
@@ -49,6 +51,11 @@ repositories {
         name "dvs1"
         url "http://dvs1.progwml6.com/files/maven/"
     }
+
+    maven {
+        name = "forestry"
+        url = "http://maven.ic2.player.to/"
+    }
 }
 
 configurations {
@@ -64,6 +71,8 @@ dependencies {
     compile "codechicken:ForgeMultipart:${config.mc.version}-${config.fmp.version}:dev"
     compile "codechicken:NotEnoughItems:${config.mc.version}-${config.nei.version}:dev"
     compile "tconstruct:TConstruct:${config.mc.version}-${config.tc.version}:deobf"
+
+    compile "net.sengir.forestry:forestry_${config.mc.version}:${config.forestry.version}:dev"
 }
 
 def build_number = project.hasProperty("manualbuildnum") ? project.manualbuildnum : (Integer.parseInt(System.getenv("BUILD_NUMBER") ?: "1")).toString()
