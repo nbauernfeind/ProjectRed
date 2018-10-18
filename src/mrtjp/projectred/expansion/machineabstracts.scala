@@ -8,6 +8,7 @@ import mrtjp.core.inventory.TInventory
 import mrtjp.projectred.ProjectRedExpansion
 import mrtjp.projectred.api._
 import mrtjp.projectred.core._
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.block.material.Material
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.{Container, ICrafting, ISidedInventory}
@@ -87,8 +88,7 @@ abstract class TileMachine extends InstancedBlockTile with TTileOrient
     override def onBlockActivated(player:EntityPlayer, actside:Int):Boolean =
     {
         val held = player.getHeldItem
-        if ((doesRotate || doesOrient) && held != null && held.getItem.isInstanceOf[IScrewdriver]
-                && held.getItem.asInstanceOf[IScrewdriver].canUse(player, held))
+        if ((doesRotate || doesOrient) && ToolUtil.tryToUseScrewdriver(world, player, held, x, y, z))
         {
             if (world.isRemote) return true
             def rotate()
@@ -96,24 +96,21 @@ abstract class TileMachine extends InstancedBlockTile with TTileOrient
                 val old = rotation
                 do setRotation((rotation+1)%4) while (old != rotation && !isRotationAllowed(rotation))
                 if (old != rotation) sendOrientUpdate()
-                world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
-                onBlockRotated()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
             def orient()
             {
                 val old = side
                 do setSide((side+1)%6) while (old != side && !isSideAllowed(side))
                 if (old != side) sendOrientUpdate()
-                world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
-                onBlockRotated()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
 
             if (player.isSneaking || !doesOrient) rotate() else orient()
-            return true
-        }
-        false
+
+            world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
+            onBlockRotated()
+
+            true
+        } else false
     }
 
     def isRotationAllowed(rot:Int) = true

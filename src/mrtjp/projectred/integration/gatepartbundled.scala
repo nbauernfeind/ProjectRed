@@ -13,11 +13,12 @@ import codechicken.lib.vec.{Cuboid6, Vector3}
 import mrtjp.core.color.Colors
 import mrtjp.core.vec.VecLib
 import mrtjp.core.world.WorldLib
-import mrtjp.projectred.api.{IBundledEmitter, IBundledTile, IConnectable, IScrewdriver}
+import mrtjp.projectred.api.{IBundledEmitter, IBundledTile, IConnectable}
 import mrtjp.projectred.core.Configurator
 import mrtjp.projectred.core.TFaceOrient._
 import mrtjp.projectred.transmission.BundledCommons._
 import mrtjp.projectred.transmission.{APIImpl_Transmission, TFaceBundledAquisitions}
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -585,7 +586,7 @@ class BusInputPanel(gate:BundledGatePart) extends BundledGateLogic(gate)
 
     override def activate(part:BundledGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition):Boolean =
     {
-        if (held != null && held.getItem.isInstanceOf[IScrewdriver]) return false
+        if (ToolUtil.isScrewdriver(held)) return false
 
         val hit1 = hit.asInstanceOf[ExtendedMOP]
         val hitdata = hit1.data.asInstanceOf[Int]

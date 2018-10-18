@@ -1,7 +1,7 @@
 package mrtjp.projectred.transportation
 
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
-import codechicken.lib.vec.{Vector3, BlockCoord}
+import codechicken.lib.vec.{BlockCoord, Vector3}
 import codechicken.microblock.handler.MicroblockProxy
 import codechicken.microblock.{BlockMicroMaterial, ItemMicroPart}
 import codechicken.multipart.{IMaskedRedstonePart, RedstoneInteractions, TMultiPart}
@@ -9,17 +9,18 @@ import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.inventory.InvWrapper
 import mrtjp.core.world.{Messenger, WorldLib}
 import mrtjp.projectred.ProjectRedCore
-import mrtjp.projectred.api.{IConnectable, IScrewdriver}
+import mrtjp.projectred.api.IConnectable
 import mrtjp.projectred.core.libmc.PRLib
 import mrtjp.projectred.transmission.IWirePart._
 import mrtjp.projectred.transmission._
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Blocks
 import net.minecraft.inventory.{IInventory, ISidedInventory}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.{ChatComponentText, IIcon, MovingObjectPosition}
+import net.minecraft.util.{ChatComponentText, MovingObjectPosition}
 
 import scala.collection.JavaConversions._
 
@@ -500,17 +501,10 @@ trait TInventoryPipe[T <: AbstractPipePayload] extends PayloadPipePart[T] with I
     abstract override def activate(player:EntityPlayer, hit:MovingObjectPosition, held:ItemStack):Boolean =
     {
         if (super.activate(player, hit, held)) return true
-
-        if (held != null && held.getItem.isInstanceOf[IScrewdriver] && held.getItem.asInstanceOf[IScrewdriver].canUse(player, held))
+        if (ToolUtil.tryToUseScrewdriver(world, player, held, hit.blockX, hit.blockY, hit.blockZ))
         {
-            if (!world.isRemote)
-            {
-                shiftOrientation(true)
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
-            }
-            return true
-        }
-
-        false
+            if (!world.isRemote) shiftOrientation(true)
+            true
+        } else false
     }
 }

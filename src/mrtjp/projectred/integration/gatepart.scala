@@ -13,8 +13,9 @@ import codechicken.microblock.FaceMicroClass
 import codechicken.multipart._
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.world.PlacementLib
-import mrtjp.projectred.api.{IConnectable, IScrewdriver}
+import mrtjp.projectred.api.IConnectable
 import mrtjp.projectred.core.{Configurator, TFaceConnectable, TSwitchPacket}
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -219,17 +220,14 @@ abstract class GatePart extends TMultiPart with TCuboidPart with TNormalOcclusio
     {
         if (getLogicPrimitive.activate(this, player, held, hit)) return true
 
-        if (held != null && held.getItem.isInstanceOf[IScrewdriver] && held.getItem.asInstanceOf[IScrewdriver].canUse(player, held))
+        if (ToolUtil.tryToUseScrewdriver(world, player, held, hit.blockX, hit.blockY, hit.blockZ))
         {
             if (!world.isRemote)
             {
-                if (player.isSneaking) configure()
-                else rotate()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
+                if (player.isSneaking) configure() else rotate()
             }
-            return true
-        }
-        false
+            true
+        } else false
     }
 
     def configure()

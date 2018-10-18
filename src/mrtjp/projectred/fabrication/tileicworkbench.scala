@@ -14,8 +14,8 @@ import mrtjp.core.gui.NodeContainer
 import mrtjp.core.render.TCubeMapRender
 import mrtjp.core.world.WorldLib
 import mrtjp.projectred.ProjectRedFabrication
-import mrtjp.projectred.api.IScrewdriver
 import mrtjp.projectred.fabrication.ItemICBlueprint._
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.entity.item.EntityItem
@@ -76,15 +76,15 @@ abstract class TileICMachine extends InstancedBlockTile with TTileOrient
     override def onBlockActivated(player:EntityPlayer, side:Int):Boolean =
     {
         val held = player.getHeldItem
-        if (doesRotate && held != null && held.getItem.isInstanceOf[IScrewdriver] && held.getItem.asInstanceOf[IScrewdriver].canUse(player, held))
+        if (doesRotate && ToolUtil.tryToUseScrewdriver(world, player, held, x, y, z))
         {
-            if (world.isRemote) return true
-            setRotation((rotation+1)%4)
-            sendOrientUpdate()
-            held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
+            if (!world.isRemote)
+            {
+                setRotation((rotation+1)%4)
+                sendOrientUpdate()
+            }
             true
-        }
-        else false
+        } else false
     }
 
     def doesRotate = true

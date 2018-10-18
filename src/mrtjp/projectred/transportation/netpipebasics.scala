@@ -8,7 +8,7 @@ package mrtjp.projectred.transportation
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.raytracer.ExtendedMOP
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import mrtjp.projectred.api.IScrewdriver
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -76,9 +76,8 @@ class NetworkValvePipePart extends AbstractNetPipe with TNetworkSubsystem with T
 
     override def activate(player:EntityPlayer, hit:MovingObjectPosition, item:ItemStack):Boolean =
     {
-        if (item != null && item.getItem.isInstanceOf[IScrewdriver] &&
-                item.getItem.asInstanceOf[IScrewdriver].canUse(player, item) &&
-                ((0 until 6) contains hit.asInstanceOf[ExtendedMOP].data.asInstanceOf[Int]) && !player.isSneaking)
+        if (((0 until 6) contains hit.asInstanceOf[ExtendedMOP].data.asInstanceOf[Int]) && !player.isSneaking
+            && ToolUtil.tryToUseScrewdriver(world, player, item, hit.blockX, hit.blockY, hit.blockZ))
         {
             if (!world.isRemote)
             {
@@ -88,10 +87,8 @@ class NetworkValvePipePart extends AbstractNetPipe with TNetworkSubsystem with T
                 pathMatrix = pathMatrix& ~(3<<(side*2))|(newMode<<(side*2))
                 sendIOFlagsUpdate()
             }
-            return true
-        }
-
-        super.activate(player, hit, item)
+            true
+        } else super.activate(player, hit, item)
     }
 
     /**

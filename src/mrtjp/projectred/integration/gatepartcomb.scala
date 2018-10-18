@@ -7,8 +7,8 @@ package mrtjp.projectred.integration
 
 import java.util.Random
 
-import mrtjp.projectred.api.IScrewdriver
 import mrtjp.projectred.core.TFaceOrient
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.MovingObjectPosition
@@ -276,7 +276,7 @@ object Repeater extends ComboGateLogic
 
     override def activate(gate:ComboGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition)=
     {
-        if (held == null || !held.getItem.isInstanceOf[IScrewdriver])
+        if (!ToolUtil.isScrewdriver(held))
         {
             if (!gate.world.isRemote) gate.configure()
             true

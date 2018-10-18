@@ -9,9 +9,9 @@ import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.vec.{BlockCoord, Rotation}
 import codechicken.multipart.INeighborTileChange
 import codechicken.multipart.handler.MultipartSaveLoad
-import mrtjp.projectred.api.IScrewdriver
 import mrtjp.projectred.core.Configurator
 import mrtjp.projectred.core.TFaceOrient._
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -242,7 +242,7 @@ class ToggleLatch(gate:SequentialGatePart) extends SequentialGateLogic(gate) wit
 
     override def activate(gate:SequentialGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition) =
     {
-        if (held == null || !held.getItem.isInstanceOf[IScrewdriver])
+        if (!ToolUtil.isScrewdriver(held))
         {
             if (!gate.world.isRemote) toggle(gate)
             true
@@ -376,7 +376,7 @@ trait TTimerGateLogic extends SequentialGateLogic with ITimerGuiLogic
 
     override def activate(gate:SequentialGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition) =
     {
-        if (held == null || !held.getItem.isInstanceOf[IScrewdriver])
+        if (!ToolUtil.isScrewdriver(held))
         {
             if (!gate.world.isRemote) GuiTimer.open(player, gate)
             true
@@ -487,7 +487,7 @@ class Sequencer(gate:SequentialGatePart) extends SequentialGateLogic(gate) with 
 
     override def activate(gate:SequentialGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition) =
     {
-        if (held == null || !held.getItem.isInstanceOf[IScrewdriver])
+        if (!ToolUtil.isScrewdriver(held))
         {
             if (!gate.world.isRemote) GuiTimer.open(player, gate)
             true
@@ -640,7 +640,7 @@ class Counter(gate:SequentialGatePart) extends SequentialGateLogic(gate) with IC
 
     override def activate(gate:SequentialGatePart, player:EntityPlayer, held:ItemStack, hit:MovingObjectPosition) =
     {
-        if (held == null || !held.getItem.isInstanceOf[IScrewdriver])
+        if (!ToolUtil.isScrewdriver(held))
         {
             if (!gate.world.isRemote) GuiCounter.open(player, gate)
             true

@@ -9,8 +9,9 @@ import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.vec.{BlockCoord, Rotation, Vector3}
 import codechicken.multipart._
 import mrtjp.core.world.PlacementLib
-import mrtjp.projectred.api.{IConnectable, IScrewdriver}
-import mrtjp.projectred.core.{TFacePowerPart, TFaceConnectable, TSwitchPacket}
+import mrtjp.projectred.api.IConnectable
+import mrtjp.projectred.core.{TFaceConnectable, TFacePowerPart, TSwitchPacket}
+import mrtjp.projectred.util.ToolUtil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -133,16 +134,11 @@ trait TFaceElectricalDevice extends TMultiPart with TCuboidPart with TNormalOccl
 
     override def activate(player:EntityPlayer, hit:MovingObjectPosition, held:ItemStack):Boolean =
     {
-        if (held != null && doesRotate && held.getItem.isInstanceOf[IScrewdriver] && held.getItem.asInstanceOf[IScrewdriver].canUse(player, held))
+        if (doesRotate && ToolUtil.tryToUseScrewdriver(world, player, held, hit.blockX, hit.blockY, hit.blockZ))
         {
-            if (!world.isRemote)
-            {
-                rotate()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
-            }
-            return true
-        }
-        false
+            if (!world.isRemote) rotate()
+            true
+        } else false
     }
 
     def rotate()
